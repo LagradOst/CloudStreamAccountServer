@@ -6,7 +6,6 @@ using System.IO;
 using System.Linq;
 using CloudStreamForms.Cryptography;
 using System.Net.NetworkInformation;
-using System.ServiceModel;
 
 namespace CloudStreamAccountServerWindows
 {
@@ -237,7 +236,7 @@ namespace CloudStreamAccountServerWindows
                 string decrypt = StringCipher.Decrypt(password, correctPassword);
                 if (decrypt.Contains("CORRECTPASS")) {
                     DateTime time = DateTime.FromBinary(long.Parse(FindHTML(decrypt, "CORRECTPASS[", "]")));
-                    if (DateTime.Now.Subtract(time).TotalSeconds < 20) { // 20 sec window
+                    if (DateTime.UtcNow.Subtract(time).TotalSeconds < 20) { // 20 sec window
                         string key = correctPassword + time.ToBinary();
                         if (usedKeys.ContainsKey(key)) {
                             Console.WriteLine("Duplicate key from " + correctPassword);
@@ -304,7 +303,7 @@ namespace CloudStreamAccountServerWindows
                     listener.Prefixes.Add(currentUrl);
                     listener.Start();
                     Console.Clear();
-                    Console.WriteLine("STARTING AT " + currentUrl);
+                    Console.WriteLine("Starting at " + currentUrl);
                     while (true) {
                         HttpListenerContext context = listener.GetContext();
                         HttpListenerRequest request = context.Request;
